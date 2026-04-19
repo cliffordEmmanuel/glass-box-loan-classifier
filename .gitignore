@@ -43,5 +43,29 @@ models/*
 .DS_Store
 Thumbs.db
 
-# Notebooks
-.ipynb_checkpoints
+# Outputs (Ignore contents but keep directories)
+outputs/*
+!outputs/.gitkeep
+!outputs/eda/
+outputs/eda/*
+!outputs/eda/.gitkeep
+!outputs/explanations/
+outputs/explanations/*
+!outputs/explanations/.gitkeep
+!outputs/models/
+outputs/models/*
+!outputs/models/.gitkeep
+
+# Tooling and Caches
+.pytest_cache/
+.ruff_cache/
+.coverage
+htmlcov/
+pytest-cache-files-*
+
+# Secrets and Config
+.env
+.env.*
+.streamlit/secrets.toml
+*.pem
+*.key

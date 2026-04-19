@@ -1,17 +1,62 @@
 [project]
 name = "glass-box-loan-classifier"
-version = "0.1.0"
-description = "Add your description here"
+version = "0.2.0"
+description = "Explainable AI dashboard for credit scoring — SHAP, LIME, DiCE counterfactuals, isotonic calibration, cost-aware thresholds, PSI drift."
 readme = "README.md"
-requires-python = ">=3.13"
+requires-python = ">=3.11"
+# Versions are upper-bounded where cross-library bugs exist. Notably, SHAP
+# <=0.49 crashes on the bracketed base_score emitted by XGBoost >=2.0; we
+# work around that in src/shap_compat.py and keep the bounds tight.
 dependencies = [
-    "dice-ml>=0.12",
-    "matplotlib>=3.10.8",
-    "numpy>=2.4.2",
-    "pandas>=2.3.3",
-    "scikit-learn>=1.8.0",
-    "seaborn>=0.13.2",
-    "shap>=0.49.1",
-    "streamlit>=1.54.0",
-    "xgboost>=3.2.0",
+    "dice-ml>=0.12,<0.13",
+    "joblib>=1.3,<2.0",
+    "lime>=0.2.0.1,<0.3",
+    "matplotlib>=3.8,<4.0",
+    "numpy>=1.26,<3.0",
+    "pandas>=2.1,<3.0",
+    "scikit-learn>=1.4,<2.0",
+    "seaborn>=0.13,<0.14",
+    "shap>=0.44,<0.50",
+    "streamlit>=1.30,<2.0",
+    "xgboost>=2.0,<4.0",
 ]
+
+[project.optional-dependencies]
+dev = [
+    "pytest>=7.4,<9.0",
+    "pytest-cov>=4.1,<6.0",
+    "ruff>=0.4,<1.0",
+    "mypy>=1.8,<2.0",
+    "pandas-stubs",
+]
+
+[tool.ruff]
+line-length = 110
+target-version = "py311"
+extend-exclude = ["notebooks", ".venv"]
+
+[tool.ruff.lint]
+select = ["E", "F", "W", "I", "N", "UP", "B", "SIM", "PD"]
+ignore = [
+    "E501",   # long lines — we use line-length for formatting only
+    "N803",   # X, X_train, X_test follow ML convention
+    "N806",   # same — uppercase locals like X
+]
+
+[tool.ruff.lint.per-file-ignores]
+"tests/*" = ["B011", "PD011"]
+
+[tool.mypy]
+python_version = "3.11"
+ignore_missing_imports = true
+warn_return_any = true
+warn_unused_configs = true
+disallow_untyped_defs = false  # too much legacy to flip this on in one pass
+check_untyped_defs = true
+exclude = ["notebooks/", "\\.venv/"]
+
+[tool.pytest.ini_options]
+testpaths = ["tests"]
+python_files = ["test_*.py"]
+addopts = "-ra --strict-markers"
+pythonpath = ["."]
